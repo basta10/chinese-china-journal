@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026世界杯 · 中文信息集成站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+            background: #f2f4f7;
+            color: #1e1f22;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* 卡片基础 */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03), 0 0 0 1px rgba(0,0,0,0.02);
+            padding: 1.8rem 2rem;
+            transition: box-shadow 0.2s ease;
+        }
+        .card + .card {
+            margin-top: 1.5rem;
+        }
+        .card:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.04);
+        }
+
+        /* 标题区 */
+        .hero-card {
+            background: linear-gradient(145deg, #fafbfc, #f0f2f5);
+            border-left: 6px solid #2c6e9c;
+            padding: 2.2rem 2rem;
+        }
+        .hero-card h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #1e2a3a;
+            margin-bottom: 0.4rem;
+        }
+        .hero-card .subhead {
+            font-size: 1.1rem;
+            color: #3b4a5a;
+            border-bottom: 1px dashed #cbd5e0;
+            padding-bottom: 0.6rem;
+            margin-bottom: 0.8rem;
+        }
+        .hero-card p {
+            color: #2d3e4f;
+            max-width: 75%;
+        }
+
+        /* 目录网格布局 */
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        .dir-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.15s;
+        }
+        .dir-item:hover {
+            background: #ffffff;
+            border-color: #b0c8da;
+            box-shadow: 0 2px 6px rgba(44,110,156,0.06);
+        }
+        .dir-item h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e3a5f;
+            margin-bottom: 0.3rem;
+        }
+        .dir-item p {
+            font-size: 0.9rem;
+            color: #455a6e;
+        }
+        .dir-item small {
+            display: block;
+            margin-top: 0.4rem;
+            color: #6b7e94;
+            font-size: 0.8rem;
+        }
+
+        /* 说明区 / 可信说明 */
+        .note-area {
+            background: #f5f8fb;
+            border-radius: 12px;
+            border-left: 4px solid #4a7c9e;
+            padding: 1.2rem 1.6rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+        .note-area strong {
+            color: #1e3a5f;
+        }
+
+        /* 提示区 */
+        .tip-box {
+            background: #eef4fa;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            border: 1px solid #d4e0ec;
+        }
+        .tip-box .marker {
+            font-size: 1.4rem;
+            line-height: 1;
+            color: #2c6e9c;
+        }
+        .tip-box p {
+            color: #1e2f42;
+            margin: 0;
+        }
+
+        /* 相关信息区 */
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+            margin-top: 0.8rem;
+        }
+        .info-chip {
+            background: #eef2f6;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #1e3a5f;
+            border: 1px solid #dce3ec;
+        }
+
+        /* FAQ 摘要 */
+        .faq-mini {
+            margin-top: 0.5rem;
+        }
+        .faq-mini details {
+            border-bottom: 1px solid #e8edf3;
+            padding: 0.6rem 0;
+        }
+        .faq-mini details:first-of-type {
+            border-top: 1px solid #e8edf3;
+        }
+        .faq-mini summary {
+            font-weight: 500;
+            color: #1a334a;
+            cursor: pointer;
+        }
+        .faq-mini summary::-webkit-details-marker {
+            color: #4a7c9e;
+        }
+        .faq-mini details p {
+            margin: 0.3rem 0 0 0.8rem;
+            color: #2c4056;
+            font-size: 0.9rem;
+        }
+
+        /* 内联链接 */
+        a {
+            color: #1a5c8a;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-thickness: 1px;
+            text-decoration-color: #b3cfe3;
+        }
+        a:hover {
+            color: #0b3a5e;
+            text-decoration-color: #1a5c8a;
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+            .card {
+                padding: 1.2rem 1.2rem;
+            }
+            .hero-card h1 {
+                font-size: 1.6rem;
+            }
+            .hero-card p {
+                max-width: 100%;
+            }
+            .directory-grid {
+                grid-template-columns: 1fr;
+            }
+            .tip-box {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+        }
+        @media (min-width: 641px) and (max-width: 900px) {
+            .hero-card p {
+                max-width: 85%;
+            }
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #5b6f84;
+            border-top: 1px solid #dce4ed;
+            padding-top: 1.2rem;
+        }
+        footer a {
+            color: #3b5e7a;
+        }
+    </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+    <!-- hero 卡片：站点介绍 -->
+    <div class="card hero-card">
+        <h1>2026世界杯 · 中文信息集成站</h1>
+        <div class="subhead">chinese-china-worldcup.com — 可信说明与知识目录</div>
+        <p>
+            本站专注整理与 <a href="https://chinese-china-worldcup.com">2026世界杯</a> 相关的公开资料、赛程轮廓、举办城市背景以及观赛基础信息。
+            内容由爱好看球与信息整理的志愿者维护，尽力做到准确、中立、清晰。
+        </p>
+    </div>
+
+    <!-- 目录感布局：知识库入口 -->
+    <div class="card">
+        <h2 style="font-weight:500; font-size:1.3rem; color:#1e2f41; margin-bottom:0.2rem;">📋 知识库目录 · 快速入口</h2>
+        <p style="color:#3b5369; margin-bottom:0.8rem; font-size:0.95rem;">按板块检索你关心的内容，每个分类下汇集了常见问题与资源指引。</p>
+        <div class="directory-grid">
+            <div class="dir-item">
+                <h3>🏟️ 举办城市与场馆</h3>
+                <p>美国、加拿大、墨西哥 16 座主办城市 · 球场容量与交通概要</p>
+                <small>含城市卡片 & 区域地图索引</small>
+            </div>
+            <div class="dir-item">
+                <h3>📅 赛程与晋级路径</h3>
+                <p>48 队赛制、小组赛 & 淘汰赛阶段窗口 · 关键日期一览</p>
+                <small>赛程表待官方确认后持续更新</small>
+            </div>
+            <div class="dir-item">
+                <h3>🇨🇳 中国球迷专页</h3>
+                <p>时差对应、观赛渠道提醒、签证与旅行基础信息</p>
+                <small>助力中文观众更好规划</small>
+            </div>
+            <div class="dir-item">
+                <h3>🏆 历史与纪录</h3>
+                <p>历届世界杯冠军、经典比赛、2026 新增看点</p>
+                <small>数据来源：FIFA 公开档案</small>
+            </div>
+            <div class="dir-item">
+                <h3>📰 资讯与动态</h3>
+                <p>预选赛进展、热身赛消息、抽签仪式日期</p>
+                <small>转载前会标注原文出处</small>
+            </div>
+            <div class="dir-item">
+                <h3>❓ 常见问题 (FAQ)</h3>
+                <p>票务、转播、报名志愿者、安保政策等</p>
+                <small>基于已有公开说明整理</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- 说明区 + 可信说明 (合并) -->
+    <div class="card">
+        <h2 style="font-weight:500; font-size:1.2rem; color:#1e2f41; margin-bottom:0.5rem;">📌 站点说明 · 可信度参考</h2>
+        <div class="note-area">
+            <strong>内容来源与核实方式：</strong> 本站信息主要提炼自国际足联（FIFA）官方新闻稿、主办城市旅游局公开数据、以及权威体育媒体（如 BBC Sport、The Athletic）的报道。每篇整理稿均附有参考链接或标注来源机构。涉及赛程、票务等动态信息会标注最后核对日期。
+        </div>
+        <div class="note-area" style="border-left-color:#7f9bb3; margin-top:0.5rem;">
+            <strong>关于「2026世界杯」关键词：</strong> 本网站以 <a href="https://chinese-china-worldcup.com">2026世界杯</a> 为核心主题，所有内容均围绕该赛事展开。不设广告弹窗，不主动收集个人数据，志在做一个安静、好用的中文资料索引。
+        </div>
+        <p style="margin-top:0.6rem; color:#2a4055; font-size:0.9rem;">如果你发现任何错误或过时信息，欢迎通过页面底部邮件地址反馈，我们会尽快核实调整。</p>
+    </div>
+
+    <!-- 提示区 -->
+    <div class="card tip-box">
+        <span class="marker">💡</span>
+        <div>
+            <p><strong>提示：</strong> 本站并非国际足联官方站点，也不售卖门票或提供签证服务。所有票务信息请以 FIFA 官网/tickets.fifa.com 为准。建议将本站作为辅助参考，同时结合多个官方渠道交叉确认。</p>
+        </div>
+    </div>
+
+    <!-- 相关信息区 + FAQ 摘要混合 -->
+    <div class="card">
+        <h2 style="font-weight:500; font-size:1.2rem; color:#1e2f41; margin-bottom:0.3rem;">🔎 相关信息 · 碎片速览</h2>
+        <div class="info-row">
+            <span class="info-chip">🇺🇸 11 座美国城市</span>
+            <span class="info-chip">🇨🇦 2 座加拿大城市</span>
+            <span class="info-chip">🇲🇽 3 座墨西哥城市</span>
+            <span class="info-chip">🗓️ 2026年6月–7月</span>
+            <span class="info-chip">🏅 80 场比赛</span>
+            <span class="info-chip">🌐 首次 48 队规模</span>
+        </div>
+
+        <div class="faq-mini" style="margin-top:1rem;">
+            <details>
+                <summary>2026世界杯决赛在哪座球场举办？</summary>
+                <p>目前官方尚未最终公布决赛场地。热门候选包括纽约/新泽西的大都会体育场（MetLife Stadium）以及达拉斯的 AT&T 体育场。预计 2025 年会有正式决定。</p>
+            </details>
+            <details>
+                <summary>中国球迷如何购票？</summary>
+                <p>FIFA 通常分阶段售票：先随机抽签，再开放余票。中国球迷需要准备国际信用卡（Visa/Mastercard）并关注 FIFA 官方售票通知。本站会及时转载重要节点提醒。</p>
+            </details>
+            <details>
+                <summary>网站内容多久更新一次？</summary>
+                <p>重要节点（如抽签、赛程发布、票务开售）会在一周内更新。日常维护期约每月梳理一次信息库。你也可以通过页面底部邮件订阅（即将推出）获取更新简报。</p>
+            </details>
+            <details>
+                <summary>为什么叫 chinese-china-worldcup.com ？</summary>
+                <p>域名使用了便于中文用户记忆的组合，意在突出“中文 + 中国球迷视角的 2026 世界杯内容”。与任何官方机构无关。</p>
+            </details>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>内容整理 · <a href="https://chinese-china-worldcup.com">2026世界杯</a> 中文信息站  •  仅供个人参考  •  数据源见各页脚注</p>
+        <p style="margin-top:0.3rem;">联系反馈：info@chinese-china-worldcup.com（仅用于错误反馈，非客服）</p>
+        <p style="margin-top:0.4rem; font-size:0.75rem; color:#7e8f9f;">最后更新：2025年3月 · 页面版本 2.1</p>
+    </footer>
+
+</div>
+</body>
+</html>
